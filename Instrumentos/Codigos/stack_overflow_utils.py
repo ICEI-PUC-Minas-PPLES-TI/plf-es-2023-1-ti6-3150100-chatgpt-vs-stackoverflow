@@ -57,12 +57,12 @@ def get_questions(qtd_perguntas, initial_page):
     return data[:qtd_perguntas]
 
 
-def get_up_votes(id):
+def get_question_data(id):
     try:
         data = {}
         params = {
             'pagesize': 100,
-            'filter': '!)riR7Z9)aTf-T)sDRRIt',
+            'filter': '!0WJ3Xlc4F.h_Fr0z1HbpA1o3m',
             'site': 'stackoverflow',
             'key': API_KEY,
             'access_token': ACCESS_TOKEN,
@@ -75,7 +75,7 @@ def get_up_votes(id):
         questions = response.json()
         print(questions)
         for question in questions['items']:
-            data[question['question_id']] = question['up_vote_count']
+            data[question['question_id']] = question
         return data
     except Exception as error:
         print(f"Erro: {error}")
