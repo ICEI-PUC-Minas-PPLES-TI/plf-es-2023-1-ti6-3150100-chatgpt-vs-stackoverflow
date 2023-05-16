@@ -2,6 +2,33 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy.stats import mannwhitneyu
+
+
+def add_quartis(q1_gpt, median_gpt, q3_gpt, q1_stack, median_stack, q3_stack):
+    plt.text(0.05, q1_gpt, f'{q1_gpt:.2f}', horizontalalignment='left')
+    plt.text(1.05, q1_stack, f'{q1_stack:.2f}', horizontalalignment='left')
+    plt.text(0.05, median_gpt, f'{median_gpt:.2f}')
+    plt.text(1.05, median_stack, f'{median_stack:.2f}')
+    plt.text(0.05, q3_gpt, f'{q3_gpt:.2f}', horizontalalignment='left')
+    plt.text(1.05, q3_stack, f'{q3_stack:.2f}', horizontalalignment='left')
+
+
+def boxplot(df, i, ax=None, fliers=True):
+    sns.boxplot(data=df,
+                x=["ChatGPT"] * len(df[i[0]]) +
+                ["Stackoverflow"] * len(df[i[1]]),
+                y=pd.concat([df[i[0]], df[i[1]]]),
+                width=0.1,
+                boxprops={'zorder': 2},
+                showfliers=fliers,
+                ax=ax)
+
+
+def salva(title):
+    plt.savefig('figs/' + title)
+    plt.show()
+
 
 df = pd.read_csv('responses_final.csv', index_col='index')
 
@@ -31,34 +58,36 @@ for i in duplas:
     print(
         f'\tmin:\n{min}\n\tmax:\n{max}\n\tquartis:\n{quartis}\n\tsoma:\n{sum}')
 
+    statistic, pvalue = mannwhitneyu(df[i[0]], df[i[1]])
+    print(f'\tU-test:\nstatistic: {statistic:.2f}\npvalue: {pvalue:.10f}')
+
+    # calcula os quartis
+    q1_gpt, median_gpt, q3_gpt = df[i[0]].quantile([0.25, 0.5, 0.75])
+    q1_stack, median_stack, q3_stack = df[i[1]].quantile([0.25, 0.5, 0.75])
+
+    #graficos de distribuição
+    sns.set_style('whitegrid')
+    sns.histplot(data=df, x=i[1], label='StackOverflow', kde=True)
+    sns.histplot(data=df, x=i[0], label='ChatGPT', kde=True)
+    plt.legend()
+    plt.title(f'Distribuição {i[2]}')
+    plt.xlabel(i[2])
+    plt.ylabel('Contagem')
+    salva(f'distribuição {i[2]}')
+
+    sns.set_style('white')
+
     # gera os boxplotes
     plt.figure(figsize=(10, 6))
     ax = sns.violinplot(
         data=df,
         x=["ChatGPT"] * len(df[i[0]]) + ["Stackoverflow"] * len(df[i[1]]),
         y=pd.concat([df[i[0]], df[i[1]]]),
-        color='gray',
     )
-    sns.boxplot(
-        data=df,
-        x=["ChatGPT"] * len(df[i[0]]) + ["Stackoverflow"] * len(df[i[1]]),
-        y=pd.concat([df[i[0]], df[i[1]]]),
-        ax=ax,
-        width=0.1,
-        boxprops={'zorder': 2},
-        # showfliers=False,
-    )
-
-    # calcula os quartis
-    q1_gpt, median_gpt, q3_gpt = df[i[0]].quantile([0.25, 0.5, 0.75])
-    q1_stack, median_stack, q3_stack = df[i[1]].quantile([0.25, 0.5, 0.75])
-
-    plt.text(0.05, q1_gpt, f'{q1_gpt:.2f}', horizontalalignment='left')
-    plt.text(1.05, q1_stack, f'{q1_stack:.2f}', horizontalalignment='left')
-    plt.text(0.05, median_gpt, f'{median_gpt:.2f}')
-    plt.text(1.05, median_stack, f'{median_stack:.2f}')
-    plt.text(0.05, q3_gpt, f'{q3_gpt:.2f}', horizontalalignment='left')
-    plt.text(1.05, q3_stack, f'{q3_stack:.2f}', horizontalalignment='left')
+    for patch in ax.collections:
+        patch.set_alpha(0.5)
+    boxplot(df=df, i=i, ax=ax)
+    add_quartis(q1_gpt, median_gpt, q3_gpt, q1_stack, median_stack, q3_stack)
 
     # definindo os rótulos dos eixos
     stop = max[i[0]] if max[i[0]] > max[i[1]] else max[i[1]]
@@ -69,8 +98,30 @@ for i in duplas:
     plt.yticks(np.linspace((start), (stop), 20))
 
     # exibindo o gráfico
-    plt.savefig(f'figs/{i[2]}.png')
-    plt.show()
+    salva(f'boxplot {i[2]}.png')
+
+    # sem outliers
+    boxplot(df=df, i=i, fliers=False)
+    add_quartis(q1_gpt, median_gpt, q3_gpt, q1_stack, median_stack, q3_stack)
+    # definindo os rótulos dos eixos
+    plt.xlabel('Ferramenta')
+    plt.ylabel(i[2])
+    plt.title(i[2] + ' sem outlier')
+
+    # exibindo o gráfico
+    salva(f'boxplot {i[2]} sem outlier.png')
+
+    # Gera o ECDF
+    sns.set_style('whitegrid')
+    sns.ecdfplot(data=df, x=i[0], label='ChatGPT')
+    sns.ecdfplot(data=df, x=i[1], label='StackOverflow')
+    plt.legend()
+    plt.xlabel(i[2])
+    plt.ylabel('Proporção')
+    plt.title(f'ECDF Comparativo - {i[2]}')
+
+    # Exibir o gráfico
+    salva(f'ecdf {i[2]}.png')
 
     # calcula a proporção
     count_gpt = count_stack = count_igual = 0
