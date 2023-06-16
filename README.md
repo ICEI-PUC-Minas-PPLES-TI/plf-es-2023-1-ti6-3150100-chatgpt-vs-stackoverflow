@@ -14,6 +14,8 @@ Análise comparativa entre as ferramentas ChatGPT e Stack Overflow com o objetiv
 * Jose Laerte Pires Xavier Junior
 * Gabriel de Oliveira Campos Pacheco
 
+## Artigo
+Acesso ao artigo pelo link: [https://www.overleaf.com/project/645ebf3f9b8b052314b488c3](https://www.overleaf.com/read/dvxhrczsymbd)
 ## Instruções de Replicação/Reprodução
 
 Apresentar instruções de como o trabalho pode ser replicado/reproduzido.
