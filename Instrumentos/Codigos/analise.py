@@ -2,7 +2,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.stats import mannwhitneyu
+from scipy.stats import mannwhitneyu, wilcoxon
 
 
 def add_quartis(q1_gpt, median_gpt, q3_gpt, q1_stack, median_stack, q3_stack):
@@ -30,7 +30,8 @@ def salva(title):
     plt.show()
 
 
-df = pd.read_csv('responses_final.csv', index_col='index')
+df = pd.read_csv('../OutrosInstrumentos/responses_final.csv',
+                 index_col='index')
 
 duplas = [
     ['loc_gpt', 'loc_stackoverflow', 'LOC'],
@@ -58,8 +59,8 @@ for i in duplas:
     print(
         f'\tmin:\n{min}\n\tmax:\n{max}\n\tquartis:\n{quartis}\n\tsoma:\n{sum}')
 
-    statistic, pvalue = mannwhitneyu(df[i[0]], df[i[1]])
-    print(f'\tU-test:\nstatistic: {statistic:.2f}\npvalue: {pvalue:.10f}')
+    statistic, pvalue = wilcoxon(df[i[0]], df[i[1]])
+    print(f'\tR-test:\nstatistic: {statistic:.2f}\np-value: {pvalue:.10f}')
 
     # calcula os quartis
     q1_gpt, median_gpt, q3_gpt = df[i[0]].quantile([0.25, 0.5, 0.75])
@@ -70,7 +71,6 @@ for i in duplas:
     sns.histplot(data=df, x=i[1], label='StackOverflow', kde=True)
     sns.histplot(data=df, x=i[0], label='ChatGPT', kde=True)
     plt.legend()
-    plt.title(f'Distribuição {i[2]}')
     plt.xlabel(i[2])
     plt.ylabel('Contagem')
     salva(f'distribuição {i[2]}')
@@ -94,7 +94,6 @@ for i in duplas:
     start = min[i[0]] if min[i[0]] < min[i[1]] else min[i[1]]
     plt.xlabel('Ferramenta')
     plt.ylabel(i[2])
-    plt.title(i[2])
     plt.yticks(np.linspace((start), (stop), 20))
 
     # exibindo o gráfico
@@ -106,7 +105,6 @@ for i in duplas:
     # definindo os rótulos dos eixos
     plt.xlabel('Ferramenta')
     plt.ylabel(i[2])
-    plt.title(i[2] + ' sem outlier')
 
     # exibindo o gráfico
     salva(f'boxplot {i[2]} sem outlier.png')
@@ -118,7 +116,6 @@ for i in duplas:
     plt.legend()
     plt.xlabel(i[2])
     plt.ylabel('Proporção')
-    plt.title(f'ECDF Comparativo - {i[2]}')
 
     # Exibir o gráfico
     salva(f'ecdf {i[2]}.png')

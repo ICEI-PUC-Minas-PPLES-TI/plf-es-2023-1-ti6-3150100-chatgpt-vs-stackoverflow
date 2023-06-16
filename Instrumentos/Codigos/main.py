@@ -27,7 +27,7 @@ import pandas as pd
 # calc.calculate_all()
 
 #pegar os upvotes
-df = pd.read_csv('responses_final.csv', index_col='index')
+df = pd.read_csv('OutrosInstrumentos/responses_final.csv', index_col='index')
 
 questions = {}
 
@@ -38,11 +38,12 @@ for i in range(0, len(df), 100):
     questions.update(stack_overflow.get_question_data(';'.join(ids)))
 
 for i, row in df.iterrows():
-   df.loc[i, 'up_votes'] = questions[row['question_id']]['up_vote_count']
-   df.loc[i, 'comment_count'] = questions[row['question_id']]['comment_count']
-   df.loc[i, 'answer_count'] = questions[row['question_id']]['answer_count']
-   df.loc[i, 'score'] = questions[row['question_id']]['score']
-   df.loc[i, 'favorite_count'] = questions[row['question_id']]['favorite_count']
+    df.loc[i, 'up_votes'] = questions[row['question_id']]['up_vote_count']
+    df.loc[i, 'comment_count'] = questions[row['question_id']]['comment_count']
+    df.loc[i, 'answer_count'] = questions[row['question_id']]['answer_count']
+    df.loc[i, 'score'] = questions[row['question_id']]['score']
+    df.loc[i,
+           'favorite_count'] = questions[row['question_id']]['favorite_count']
 
 print(df[['title', 'question_id', 'up_votes']])
 
