@@ -1,6 +1,6 @@
 cff-version: 1.0.1
-message: Please cite this software using these metadata
-title: Comparação de Ferramentas para Dúvidas em Desenvolvimento de Software: ChatGPT vs Stack Overflow - Análise da Qualidade do Código
+message: "Please cite this software using these metadata"
+title: "Comparação de Ferramentas para Dúvidas em Desenvolvimento de Software: ChatGPT vs Stack Overflow - Análise da Qualidade do Código"
 authors:
   - family-names: Miranda
     given-names: Maria Eduarda Machado
@@ -23,7 +23,7 @@ authors:
 keywords:
 - ChatGPT
 - StackOverflow
-repositorie-code: https://github.com/ICEI-PUC-Minas-PPLES-TI/plf-es-2023-1-ti6-3150100-chatgpt-vs-stackoverflow/
+repository-code: "https://github.com/ICEI-PUC-Minas-PPLES-TI/plf-es-2023-1-ti6-3150100-chatgpt-vs-stackoverflow"
 license: CC-BY-4.0
 version: 1.0.0
 date-released: 2023-06-19
