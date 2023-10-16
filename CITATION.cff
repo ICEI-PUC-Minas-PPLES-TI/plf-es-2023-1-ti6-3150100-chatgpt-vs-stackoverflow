@@ -14,12 +14,12 @@ authors:
     given-names: Samuel Ribeiro
   - name-sufix: Professor
     affiliation: PUC Minas
-  - family-names: Xavier Júnior
+    family-names: Pires Xavier Júnior
     given-names: José Laerte
   - name-sufix: Professor
     affiliation: PUC Minas
-  - family-names: Pacheco
-    given-names: Gabriel Oliveira Campos
+    family-names: Oliveira Campos Pacheco
+    given-names: Gabriel
 keywords:
 - ChatGPT
 - StackOverflow
